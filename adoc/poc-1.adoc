@@ -34,6 +34,20 @@ image::image-file-name.png[I am the image alt text.]
 This is another paragraph.footnote:[I am footnote text and will be rendered at the bottom of the article.]
 
 == Prerequisites
+* A Linux host with the following installed software:
+** docker engine
+** openssh-client
+** git-client
+
+* Account at digitalocean.com to create the VMs
+
+== First Steps
+=== Install 'asciidoctor' on the existing Linux host
+[source,shell]
+----
+sdsdfgsdfgsdfg
+----
+
 
 === Second level heading
 
