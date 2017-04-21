@@ -1,0 +1,8 @@
+=== Floating IP Address
+ $ doctl compute floating-ip create --region fra1
+
+ $ doctl compute floating-ip list --no-header --format IP
+
+=== Domain and DNS
+ $ doctl compute domain create mobilelife.de --ip-address `doctl compute floating-ip list --no-header --format IP`
+
