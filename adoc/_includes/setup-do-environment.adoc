@@ -1,3 +1,51 @@
+=== Host Preparation
+==== Creating a DigitalOcean OCP-Master-Image
+
+ # domain=mobilelife.de \
+   host=centos7ocp \
+   fp_sshkey=f2:6f:8b:32:a7:60:96:a1:43:d8:65:d9:d7:07:aa:3a \
+   ImageID=`doctl compute image list | grep centos-7-x64 | awk '{print $1}'` \
+   newConfig=`doctl compute droplet create ${host}.${domain} --image $ImageID --region fra1 --size 512Mb --ssh-keys $fp_sshkey --wait --no-header --format ID,Name,PublicIPv4` && \
+   doctl compute domain records create $domain --record-type A --record-name $host --record-data `echo $newConfig | awk '{print $3}'`
+
+The resulting output looks similar to this:
+
+ ID          Type    Name          Data              Priority    Port    Weight
+ 24061429    A       centos7ocp    46.101.122.165    0           0       0
+
+You can now initiate a SSH-session to your newly created host, which will be later 'snapshoted' to the OCP-Master-Image, from which all maschines of you HA-Cluster wil be instanciated. Prepare  the host as described in the https://docs.openshift.com/container-platform/3.5/install_config/install/host_preparation.html[OCP Documentation].
+
+=== Login to to the OCP-Master-Image and prepare it for OCP
+
+ $ ssh -l root centos7ocp.mobilelife.de
+
+ adduser wkulhanek
+ adduser kstich
+ passwd wkulhanek
+ passwd kstich
+ cp -R .ssh /home/kstich
+ chown -R kstich:kstich /home/kstich/.ssh
+ usermod -aG wheel kstich
+ usermod -aG wheel wkulhanek
+ yum install wget git net-tools bind-utils iptables-services bridge-utils bash-completion
+ yum update
+ yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+ sed -i -e "s/^enabled=1/enabled=0/" /etc/yum.repos.d/epel.repo
+ yum -y --enablerepo=epel install ansible pyOpenSSL
+ # yum install docker
+ # docker version
+ # vi /etc/sysconfig/docker
+ exit
+
+=== Take a snapshot of the master image
+On the 'admin'-machine initiate a snapshot of your work. You have configured the master-image. All future openshift cluster member machines will be instanciated of this master-image.
+
+ $ ID=`doctl compute droplet list --no-header --format ID,Name | grep centos7ocp | awk '{print $1}'` \
+ doctl compute droplet-action shutdown $ID --wait && \
+ doctl compute droplet-action snapshot $ID --snapshot-name centos7ocp-`date +%s` --wait && \
+ doctl compute snapshot list
+ # $ doctl compute droplet delete $ID -f 
+
 === Floating IP Address
  $ doctl compute floating-ip create --region fra1
 
@@ -7,7 +55,7 @@
  $ doctl compute domain create mobilelife.de --ip-address `doctl compute floating-ip list --no-header --format IP`
 
 === Droplets
- $ ID=`doctl compute droplet list --no-header --format ID,Name | grep master1 | cut -d " " -f1`
+ $ ID=`doctl compute droplet list --no-header --format ID,Name | grep master1 | awk '{print $1}'`
  $ doctl compute droplet-action shutdown $ID
  $ doctl compute droplet-action snapshot $ID --snapshot-name master1-`date +%s`
  $ doctl compute snapshot list

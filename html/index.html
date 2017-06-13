@@ -537,8 +537,12 @@ table.CodeRay td.code>pre{padding:0}
 </li>
 <li><a href="#_setting_up_digitalocean_environment">Setting up DigitalOcean Environment</a>
 <ul class="sectlevel2">
+<li><a href="#_host_preparation">Host Preparation</a></li>
+<li><a href="#_login_to_to_the_ocp_master_image_and_prepare_it_for_ocp">Login to to the OCP-Master-Image and prepare it for OCP</a></li>
+<li><a href="#_take_a_snapshot_of_the_master_image">Take a snapshot of the master image</a></li>
 <li><a href="#_floating_ip_address">Floating IP Address</a></li>
 <li><a href="#_domain_and_dns">Domain and DNS</a></li>
+<li><a href="#_droplets">Droplets</a></li>
 <li><a href="#_second_level_heading">Second level heading</a></li>
 </ul>
 </li>
@@ -885,6 +889,78 @@ Validating token: OK</pre>
 <h2 id="_setting_up_digitalocean_environment">Setting up DigitalOcean Environment</h2>
 <div class="sectionbody">
 <div class="sect2">
+<h3 id="_host_preparation">Host Preparation</h3>
+<div class="sect3">
+<h4 id="_creating_a_digitalocean_ocp_master_image">Creating a DigitalOcean OCP-Master-Image</h4>
+<div class="literalblock">
+<div class="content">
+<pre># domain=mobilelife.de \
+  host=centos7ocp \
+  fp_sshkey=f2:6f:8b:32:a7:60:96:a1:43:d8:65:d9:d7:07:aa:3a \
+  ImageID=`doctl compute image list | grep centos-7-x64 | awk '{print $1}'` \
+  newConfig=`doctl compute droplet create ${host}.${domain} --image $ImageID --region fra1 --size 512Mb --ssh-keys $fp_sshkey --wait --no-header --format ID,Name,PublicIPv4` &amp;&amp; \
+  doctl compute domain records create $domain --record-type A --record-name $host --record-data `echo $newConfig | awk '{print $3}'`</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The resulting output looks similar to this:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>ID          Type    Name          Data              Priority    Port    Weight
+24061429    A       centos7ocp    46.101.122.165    0           0       0</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can now initiate a SSH-session to your newly created host, which will be later 'snapshoted' to the OCP-Master-Image, from which all maschines of you HA-Cluster wil be instanciated. Prepare  the host as described in the <a href="https://docs.openshift.com/container-platform/3.5/install_config/install/host_preparation.html">OCP Documentation</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_login_to_to_the_ocp_master_image_and_prepare_it_for_ocp">Login to to the OCP-Master-Image and prepare it for OCP</h3>
+<div class="literalblock">
+<div class="content">
+<pre>$ ssh -l root centos7ocp.mobilelife.de</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>adduser wkulhanek
+adduser kstich
+passwd wkulhanek
+passwd kstich
+cp -R .ssh /home/kstich
+chown -R kstich:kstich /home/kstich/.ssh
+usermod -aG wheel kstich
+usermod -aG wheel wkulhanek
+yum install wget git net-tools bind-utils iptables-services bridge-utils bash-completion
+yum update
+yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+sed -i -e "s/^enabled=1/enabled=0/" /etc/yum.repos.d/epel.repo
+yum -y --enablerepo=epel install ansible pyOpenSSL
+# yum install docker
+# docker version
+# vi /etc/sysconfig/docker
+exit</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_take_a_snapshot_of_the_master_image">Take a snapshot of the master image</h3>
+<div class="paragraph">
+<p>On the 'admin'-machine initiate a snapshot of your work. You have configured the master-image. All future openshift cluster member machines will be instanciated of this master-image.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ ID=`doctl compute droplet list --no-header --format ID,Name | grep centos7ocp | awk '{print $1}'` \
+doctl compute droplet-action shutdown $ID --wait &amp;&amp; \
+doctl compute droplet-action snapshot $ID --snapshot-name centos7ocp-`date +%s` --wait &amp;&amp; \
+doctl compute snapshot list
+# $ doctl compute droplet delete $ID -f</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
 <h3 id="_floating_ip_address">Floating IP Address</h3>
 <div class="literalblock">
 <div class="content">
@@ -902,6 +978,19 @@ Validating token: OK</pre>
 <div class="literalblock">
 <div class="content">
 <pre>$ doctl compute domain create mobilelife.de --ip-address `doctl compute floating-ip list --no-header --format IP`</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_droplets">Droplets</h3>
+<div class="literalblock">
+<div class="content">
+<pre>$ ID=`doctl compute droplet list --no-header --format ID,Name | grep master1 | awk '{print $1}'`
+$ doctl compute droplet-action shutdown $ID
+$ doctl compute droplet-action snapshot $ID --snapshot-name master1-`date +%s`
+$ doctl compute snapshot list
+$ doctl compute droplet delete $ID -f
+$ doctl compute domain records delete mobilelife.de 24017268 24020822</pre>
 </div>
 </div>
 </div>
