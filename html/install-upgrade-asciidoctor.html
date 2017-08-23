@@ -5,8 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.6.1">
-<meta name="author" content="Karl-Johannes Stich">
-<title>AsciiDoc Article Title</title>
+<title>System Requirements</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -425,221 +424,315 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 .hide-for-print{display:none!important}
 .show-for-print{display:inherit!important}}
 </style>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
 </head>
 <body class="article">
 <div id="header">
-<h1>AsciiDoc Article Title</h1>
-<div class="details">
-<span id="author" class="author">Karl-Johannes Stich</span><br>
-<span id="email" class="email"><a href="mailto:karl.stich@web.de">karl.stich@web.de</a></span><br>
-<span id="revnumber">version 1.0,</span>
-<span id="revdate">July 29, 2017, Asciidoctor 1.5 article template</span>
-</div>
-<div id="toc" class="toc">
-<div id="toctitle">Table of Contents</div>
-<ul class="sectlevel1">
-<li><a href="#_first_level_heading">First level heading</a>
-<ul class="sectlevel2">
-<li><a href="#_second_level_heading">Second level heading</a></li>
-</ul>
-</li>
-<li><a href="#_first_level_heading_2">First level heading</a></li>
-<li><a href="#_first_level_heading_3">First level heading</a></li>
-</ul>
-</div>
 </div>
 <div id="content">
-<div id="preamble">
+<div class="sect1">
+<h2 id="_system_requirements">System Requirements</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Content entered directly below the header but before the first section heading is called the preamble.</p>
+<p>Asciidoctor works on Linux, OS X (aka Mac OS X) and Windows.</p>
+</div>
+<div class="paragraph">
+<p>Asciidoctor requires one of the following implementations of Ruby:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Ruby 1.8.7</p>
+</li>
+<li>
+<p>Ruby 1.9.3</p>
+</li>
+<li>
+<p>Ruby 2 (2.0.0 or better)</p>
+</li>
+<li>
+<p>JRuby 1.7 (Ruby 1.8 and 1.9 modes)</p>
+</li>
+<li>
+<p>JRuby 9000</p>
+</li>
+<li>
+<p>Rubinius 2.0 (Ruby 1.8 and 1.9 modes)</p>
+</li>
+<li>
+<p>Opal (Javascript)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>We expect Asciidoctor to work with other versions of Ruby as well.
+We welcome your help testing those versions if you are interested in seeing them supported.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_first_level_heading">First level heading</h2>
+<h2 id="_installing_the_asciidoctor_ruby_gem">Installing the Asciidoctor Ruby Gem</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This is a paragraph with a <strong>bold</strong> word and an <em>italicized</em> word.</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="image-file-name.png" alt="I am the image alt text.">
-</div>
-<div class="title">Figure 1. Image caption</div>
-</div>
-<div class="paragraph">
-<p>This is another paragraph.<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnote_1" title="View footnote.">1</a>]</sup></p>
+<p>Asciidoctor can be installed using the <code>gem</code> command, Bundler or a Linux package manager.</p>
 </div>
 <div class="sect2">
-<h3 id="_second_level_heading">Second level heading</h3>
-<div class="ulist">
-<div class="title">Unordered list title</div>
-<ul>
-<li>
-<p>list item 1</p>
-<div class="ulist">
-<ul>
-<li>
-<p>nested list item</p>
-<div class="ulist">
-<ul>
-<li>
-<p>nested nested list item 1</p>
-</li>
-<li>
-<p>nested nested list item 2</p>
-</li>
-</ul>
-</div>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>list item 2</p>
-</li>
-</ul>
-</div>
+<h3 id="_install_using_code_gem_code">Install using <code>gem</code></h3>
 <div class="paragraph">
-<p>This is a paragraph.</p>
-</div>
-<div class="exampleblock">
-<div class="title">Example 1. Example block title</div>
-<div class="content">
-<div class="paragraph">
-<p>Content in an example block is subject to normal substitutions.</p>
-</div>
-</div>
-</div>
-<div class="sidebarblock">
-<div class="content">
-<div class="title">Sidebar title</div>
-<div class="paragraph">
-<p>Sidebars contain aside text and are subject to normal substitutions.</p>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_third_level_heading">Third level heading</h4>
-<div id="id-for-listing-block" class="listingblock">
-<div class="title">Listing block title</div>
-<div class="content">
-<pre>Content in a listing block is subject to verbatim substitutions.
-Listing block content is commonly used to preserve code input.</pre>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_fourth_level_heading">Fourth level heading</h5>
-<table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 1. Table title</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Column heading 1</th>
-<th class="tableblock halign-left valign-top">Column heading 2</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Column 1, row 1</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Column 2, row 1</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Column 1, row 2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Column 2, row 2</p></td>
-</tr>
-</tbody>
-</table>
-<div class="sect5">
-<h6 id="_fifth_level_heading">Fifth level heading</h6>
-<div class="quoteblock">
-<blockquote>
-<div class="paragraph">
-<p>I am a block quote or a prose excerpt.
-I am subject to normal substitutions.</p>
-</div>
-</blockquote>
-<div class="attribution">
-&#8212; firstname lastname<br>
-<cite>movie title</cite>
-</div>
-</div>
-<div class="verseblock">
-<pre class="content">I am a verse block.
-  Indents and endlines are preserved in verse blocks.</pre>
-<div class="attribution">
-&#8212; firstname lastname<br>
-<cite>poem title and more</cite>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_first_level_heading_2">First level heading</h2>
-<div class="sectionbody">
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-There are five admonition labels: Tip, Note, Important, Caution and Warning.
-</td>
-</tr>
-</table>
+<p>To install Asciidoctor using the <code>gem</code> command:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>ordered list item</p>
-<div class="olist loweralpha">
-<ol class="loweralpha" type="a">
-<li>
-<p>nested ordered list item</p>
+<p>Open a terminal</p>
 </li>
-</ol>
+<li>
+<p>Type the following <code>gem</code> command</p>
+<div class="literalblock">
+<div class="content">
+<pre>$ gem install asciidoctor</pre>
 </div>
-</li>
-<li>
-<p>ordered list item</p>
+</div>
 </li>
 </ol>
 </div>
 <div class="paragraph">
-<p>The text at the end of this sentence is cross referenced to <a href="#_third_level_heading">the third level heading</a></p>
+<p>If the Asciidoctor gem installed successfully, the <code>asciidoctor</code> command line interface (CLI) will be available on your PATH.
+To confirm that Asciidoctor is available, execute:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor --version</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The following output should appear in your terminal:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>Asciidoctor 1.5.4 [http://asciidoctor.org]
+Runtime Environment (ruby 2.3.0p0 [x86_64-linux]) (lc:UTF-8 fs:UTF-8 in:- ex:UTF-8)</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_install_using_bundler">Install using Bundler</h3>
+<div class="paragraph">
+<p>To install Asciidoctor for a project using Bundler:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open your project&#8217;s Gemfile</p>
+</li>
+<li>
+<p>Add the <code>asciidoctor</code> gem using:</p>
+<div class="literalblock">
+<div class="content">
+<pre>gem 'asciidoctor'</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Save the Gemfile</p>
+</li>
+<li>
+<p>Open a terminal</p>
+</li>
+<li>
+<p>Install the gem using the <code>bundle</code> command:</p>
+<div class="literalblock">
+<div class="content">
+<pre>$ bundle</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_install_using_code_yum_code_or_code_dnf_code_on_fedora">Install using <code>yum</code> or <code>dnf</code> on Fedora</h3>
+<div class="paragraph">
+<p>To install Asciidoctor on Fedora (or RHEL via EPEL) using the <a href="https://apps.fedoraproject.org/packages/rubygem-asciidoctor">rubygem-asciidoctor</a> package:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open a terminal</p>
+</li>
+<li>
+<p>Run the installation command</p>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">On Fedora 21 or earlier</dt>
+<dd>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo yum install asciidoctor</pre>
+</div>
+</div>
+</dd>
+<dt class="hdlist1">On Fedora 22 or later</dt>
+<dd>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo dnf install asciidoctor</pre>
+</div>
+</div>
+</dd>
+</dl>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The benefit of installing the gem using this method is that the package manager will also install Ruby and RubyGems if not already on your machine.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_install_using_code_apt_get_code_on_debian_or_ubuntu">Install using <code>apt-get</code> on Debian or Ubuntu</h3>
+<div class="paragraph">
+<p>To install Asciidoctor on Debian Sid or Ubuntu Saucy or greater:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open a terminal</p>
+</li>
+<li>
+<p>Type the following <code>apt-get</code> command using sudo:</p>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo apt-get install asciidoctor</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The benefit of installing the gem via <code>apt-get</code> is that the package manager will also install Ruby and RubyGems if not already on your machine.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_install_using_code_apk_code_on_alpine_linux">Install using <code>apk</code> on Alpine Linux</h3>
+<div class="paragraph">
+<p>To install Asciidoctor on Alpine Linux using the <a href="https://pkgs.alpinelinux.org/package/main/x86_64/asciidoctor">asciidoctor</a> package:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open a terminal</p>
+</li>
+<li>
+<p>Type the following <code>apk</code> command using sudo:</p>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo apk add asciidoctor</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The benefit of installing the gem via <code>apk</code> is that the package manager will also install Ruby and RubyGems if not already on your machine.</p>
+</div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_first_level_heading_3">First level heading</h2>
+<h2 id="_upgrading_the_asciidoctor_ruby_gem">Upgrading the Asciidoctor Ruby Gem</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This is a link to the <a href="http://asciidoctor.org/docs/user-manual/">Asciidoctor User Manual</a>.
-This is an attribute reference <a href="http://asciidoctor.org/docs/asciidoc-syntax-quick-reference/">which links this text to the Asciidoctor Quick Reference Guide</a>.</p>
+<p>If you have an earlier version of Asciidoctor installed, you can update the gem using the <code>gem</code> command:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ gem update asciidoctor</pre>
 </div>
 </div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you accidentally use <code>gem install</code> instead of <code>gem update</code>, then you&#8217;ll end up with both versions installed.
+To remove the older version, use the following <code>gem</code> command:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ gem cleanup asciidoctor</pre>
 </div>
 </div>
-<div id="footnotes">
-<hr>
-<div class="footnote" id="_footnote_1">
-<a href="#_footnoteref_1">1</a>. I am footnote text and will be rendered at the bottom of the article.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>On Fedora, you can update the package using:</p>
+</div>
+<div class="literalblock">
+<div class="title">On Fedora 21 or earlier</div>
+<div class="content">
+<pre>$ sudo yum update asciidoctor</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="title">On Fedora 22 or later</div>
+<div class="content">
+<pre>$ sudo dnf update asciidoctor</pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+Your Fedora system may be configured to automatically update packages, in which case no further action is required by you.
+Refer to the {fedora-docs}[Fedora docs] if you are unsure.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>On Debian or Ubuntu, you can update the package using:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo apt-get upgrade asciidoctor</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>On Alpine Linux, you can update the package using:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo apk add --upgrade asciidoctor</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+The Linux packages may not be available right away after a release of the gem.
+It may take several weeks for the packages to be updated.
+If you need to upgrade to the latest version immediately, use the <code>gem</code> install option documented above.
+</td>
+</tr>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 1.0<br>
-Last updated 2017-04-20 12:39:17 UTC
+Last updated 2017-04-20 20:45:35 UTC
 </div>
 </div>
 </body>

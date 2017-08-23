@@ -4,7 +4,7 @@
  # domain=mobilelife.de \
    host=centos7ocp \
    fp_sshkey=f2:6f:8b:32:a7:60:96:a1:43:d8:65:d9:d7:07:aa:3a \
-   ImageID=`doctl compute image list | grep centos-7-x64 | awk '{print $1}'` \
+   ImageID=`doctl compute image list --public | grep centos-7-x64 | awk '{print $1}'` \
    newConfig=`doctl compute droplet create ${host}.${domain} --image $ImageID --region fra1 --size 512Mb --ssh-keys $fp_sshkey --wait --no-header --format ID,Name,PublicIPv4` && \
    doctl compute domain records create $domain --record-type A --record-name $host --record-data `echo $newConfig | awk '{print $3}'`
 
@@ -27,11 +27,14 @@ You can now initiate a SSH-session to your newly created host, which will be lat
  chown -R kstich:kstich /home/kstich/.ssh
  usermod -aG wheel kstich
  usermod -aG wheel wkulhanek
- yum install wget git net-tools bind-utils iptables-services bridge-utils bash-completion
+ yum install wget git net-tools bind-utils iptables-services bridge-utils bash-completion kexec-tools sos psacct
  yum update
  yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
  sed -i -e "s/^enabled=1/enabled=0/" /etc/yum.repos.d/epel.repo
  yum -y --enablerepo=epel install ansible pyOpenSSL
+ cd ~
+ git clone https://github.com/openshift/openshift-ansible
+ cd openshift-ansible
  # yum install docker
  # docker version
  # vi /etc/sysconfig/docker

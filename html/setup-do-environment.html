@@ -5,8 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.6.1">
-<meta name="author" content="Karl-Johannes Stich">
-<title>AsciiDoc Article Title</title>
+<title>Host Preparation</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -425,221 +424,121 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 .hide-for-print{display:none!important}
 .show-for-print{display:inherit!important}}
 </style>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
 </head>
 <body class="article">
 <div id="header">
-<h1>AsciiDoc Article Title</h1>
-<div class="details">
-<span id="author" class="author">Karl-Johannes Stich</span><br>
-<span id="email" class="email"><a href="mailto:karl.stich@web.de">karl.stich@web.de</a></span><br>
-<span id="revnumber">version 1.0,</span>
-<span id="revdate">July 29, 2017, Asciidoctor 1.5 article template</span>
-</div>
-<div id="toc" class="toc">
-<div id="toctitle">Table of Contents</div>
-<ul class="sectlevel1">
-<li><a href="#_first_level_heading">First level heading</a>
-<ul class="sectlevel2">
-<li><a href="#_second_level_heading">Second level heading</a></li>
-</ul>
-</li>
-<li><a href="#_first_level_heading_2">First level heading</a></li>
-<li><a href="#_first_level_heading_3">First level heading</a></li>
-</ul>
-</div>
 </div>
 <div id="content">
-<div id="preamble">
-<div class="sectionbody">
-<div class="paragraph">
-<p>Content entered directly below the header but before the first section heading is called the preamble.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_first_level_heading">First level heading</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>This is a paragraph with a <strong>bold</strong> word and an <em>italicized</em> word.</p>
-</div>
-<div class="imageblock">
+<div class="sect2">
+<h3 id="_host_preparation">Host Preparation</h3>
+<div class="sect3">
+<h4 id="_creating_a_digitalocean_ocp_master_image">Creating a DigitalOcean OCP-Master-Image</h4>
+<div class="literalblock">
 <div class="content">
-<img src="image-file-name.png" alt="I am the image alt text.">
+<pre># domain=mobilelife.de \
+  host=centos7ocp \
+  fp_sshkey=f2:6f:8b:32:a7:60:96:a1:43:d8:65:d9:d7:07:aa:3a \
+  ImageID=`doctl compute image list | grep centos-7-x64 | awk '{print $1}'` \
+  newConfig=`doctl compute droplet create ${host}.${domain} --image $ImageID --region fra1 --size 512Mb --ssh-keys $fp_sshkey --wait --no-header --format ID,Name,PublicIPv4` &amp;&amp; \
+  doctl compute domain records create $domain --record-type A --record-name $host --record-data `echo $newConfig | awk '{print $3}'`</pre>
 </div>
-<div class="title">Figure 1. Image caption</div>
 </div>
 <div class="paragraph">
-<p>This is another paragraph.<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnote_1" title="View footnote.">1</a>]</sup></p>
+<p>The resulting output looks similar to this:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>ID          Type    Name          Data              Priority    Port    Weight
+24061429    A       centos7ocp    46.101.122.165    0           0       0</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can now initiate a SSH-session to your newly created host, which will be later 'snapshoted' to the OCP-Master-Image, from which all maschines of you HA-Cluster wil be instanciated. Prepare  the host as described in the <a href="https://docs.openshift.com/container-platform/3.5/install_config/install/host_preparation.html">OCP Documentation</a>.</p>
+</div>
+</div>
 </div>
 <div class="sect2">
-<h3 id="_second_level_heading">Second level heading</h3>
-<div class="ulist">
-<div class="title">Unordered list title</div>
-<ul>
-<li>
-<p>list item 1</p>
-<div class="ulist">
-<ul>
-<li>
-<p>nested list item</p>
-<div class="ulist">
-<ul>
-<li>
-<p>nested nested list item 1</p>
-</li>
-<li>
-<p>nested nested list item 2</p>
-</li>
-</ul>
-</div>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>list item 2</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>This is a paragraph.</p>
-</div>
-<div class="exampleblock">
-<div class="title">Example 1. Example block title</div>
+<h3 id="_login_to_to_the_ocp_master_image_and_prepare_it_for_ocp">Login to to the OCP-Master-Image and prepare it for OCP</h3>
+<div class="literalblock">
 <div class="content">
-<div class="paragraph">
-<p>Content in an example block is subject to normal substitutions.</p>
+<pre>$ ssh -l root centos7ocp.mobilelife.de</pre>
 </div>
 </div>
-</div>
-<div class="sidebarblock">
+<div class="literalblock">
 <div class="content">
-<div class="title">Sidebar title</div>
+<pre>adduser wkulhanek
+adduser kstich
+passwd wkulhanek
+passwd kstich
+cp -R .ssh /home/kstich
+chown -R kstich:kstich /home/kstich/.ssh
+usermod -aG wheel kstich
+usermod -aG wheel wkulhanek
+yum install wget git net-tools bind-utils iptables-services bridge-utils bash-completion
+yum update
+yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+sed -i -e "s/^enabled=1/enabled=0/" /etc/yum.repos.d/epel.repo
+yum -y --enablerepo=epel install ansible pyOpenSSL
+# yum install docker
+# docker version
+# vi /etc/sysconfig/docker
+exit</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_take_a_snapshot_of_the_master_image">Take a snapshot of the master image</h3>
 <div class="paragraph">
-<p>Sidebars contain aside text and are subject to normal substitutions.</p>
+<p>On the 'admin'-machine initiate a snapshot of your work. You have configured the master-image. All future openshift cluster member machines will be instanciated of this master-image.</p>
 </div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_third_level_heading">Third level heading</h4>
-<div id="id-for-listing-block" class="listingblock">
-<div class="title">Listing block title</div>
+<div class="literalblock">
 <div class="content">
-<pre>Content in a listing block is subject to verbatim substitutions.
-Listing block content is commonly used to preserve code input.</pre>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_fourth_level_heading">Fourth level heading</h5>
-<table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 1. Table title</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Column heading 1</th>
-<th class="tableblock halign-left valign-top">Column heading 2</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Column 1, row 1</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Column 2, row 1</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Column 1, row 2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Column 2, row 2</p></td>
-</tr>
-</tbody>
-</table>
-<div class="sect5">
-<h6 id="_fifth_level_heading">Fifth level heading</h6>
-<div class="quoteblock">
-<blockquote>
-<div class="paragraph">
-<p>I am a block quote or a prose excerpt.
-I am subject to normal substitutions.</p>
-</div>
-</blockquote>
-<div class="attribution">
-&#8212; firstname lastname<br>
-<cite>movie title</cite>
-</div>
-</div>
-<div class="verseblock">
-<pre class="content">I am a verse block.
-  Indents and endlines are preserved in verse blocks.</pre>
-<div class="attribution">
-&#8212; firstname lastname<br>
-<cite>poem title and more</cite>
+<pre>$ ID=`doctl compute droplet list --no-header --format ID,Name | grep centos7ocp | awk '{print $1}'` \
+doctl compute droplet-action shutdown $ID --wait &amp;&amp; \
+doctl compute droplet-action snapshot $ID --snapshot-name centos7ocp-`date +%s` --wait &amp;&amp; \
+doctl compute snapshot list
+# $ doctl compute droplet delete $ID -f</pre>
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_floating_ip_address">Floating IP Address</h3>
+<div class="literalblock">
+<div class="content">
+<pre>$ doctl compute floating-ip create --region fra1</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ doctl compute floating-ip list --no-header --format IP</pre>
 </div>
 </div>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_first_level_heading_2">First level heading</h2>
-<div class="sectionbody">
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-There are five admonition labels: Tip, Note, Important, Caution and Warning.
-</td>
-</tr>
-</table>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>ordered list item</p>
-<div class="olist loweralpha">
-<ol class="loweralpha" type="a">
-<li>
-<p>nested ordered list item</p>
-</li>
-</ol>
-</div>
-</li>
-<li>
-<p>ordered list item</p>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>The text at the end of this sentence is cross referenced to <a href="#_third_level_heading">the third level heading</a></p>
+<div class="sect2">
+<h3 id="_domain_and_dns">Domain and DNS</h3>
+<div class="literalblock">
+<div class="content">
+<pre>$ doctl compute domain create mobilelife.de --ip-address `doctl compute floating-ip list --no-header --format IP`</pre>
 </div>
 </div>
 </div>
-<div class="sect1">
-<h2 id="_first_level_heading_3">First level heading</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>This is a link to the <a href="http://asciidoctor.org/docs/user-manual/">Asciidoctor User Manual</a>.
-This is an attribute reference <a href="http://asciidoctor.org/docs/asciidoc-syntax-quick-reference/">which links this text to the Asciidoctor Quick Reference Guide</a>.</p>
+<div class="sect2">
+<h3 id="_droplets">Droplets</h3>
+<div class="literalblock">
+<div class="content">
+<pre>$ ID=`doctl compute droplet list --no-header --format ID,Name | grep master1 | awk '{print $1}'`
+$ doctl compute droplet-action shutdown $ID
+$ doctl compute droplet-action snapshot $ID --snapshot-name master1-`date +%s`
+$ doctl compute snapshot list
+$ doctl compute droplet delete $ID -f
+$ doctl compute domain records delete mobilelife.de 24017268 24020822</pre>
 </div>
 </div>
-</div>
-</div>
-<div id="footnotes">
-<hr>
-<div class="footnote" id="_footnote_1">
-<a href="#_footnoteref_1">1</a>. I am footnote text and will be rendered at the bottom of the article.
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 1.0<br>
-Last updated 2017-04-20 12:39:17 UTC
+Last updated 2017-04-23 21:25:53 UTC
 </div>
 </div>
 </body>

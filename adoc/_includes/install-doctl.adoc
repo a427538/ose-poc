@@ -6,11 +6,7 @@ Visit the Releases page for the doctl GitHub project, and find the appropriate a
 Or:
 
     cd ~
-    curl -OL https://github.com/digitalocean/doctl/releases/download/v1.6.0/doctl-1.6.0-linux-amd64.tar.gz
-
-Extract the binary. On GNU/Linux or OS X systems, you can use tar:
-
-    tar xf ~/doctl-1.6.0-linux-amd64.tar.gz
+    curl -L https://github.com/digitalocean/doctl/releases/download/v1.7.0/doctl-1.7.0-linux-amd64.tar.gz | tar xf -
 
 On Windows systems, you should be able to double-click the zip archive to extract the doctl executable.
 
