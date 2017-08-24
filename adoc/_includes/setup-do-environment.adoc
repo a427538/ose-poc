@@ -44,7 +44,7 @@ You can now initiate a SSH-session to your newly created host, which will be lat
 
 On the 'admin'-machine initiate a snapshot of your work. You have configured the master-image. All future openshift cluster member machines will be instanciated of this master-image.
 
- $ ID=`doctl compute droplet list --no-header --format ID,Name | grep centos7ocp | awk '{print $1}'` \
+ $ ID=`doctl compute droplet list --no-header --format ID,Name | grep centos7ocp-nodocker | awk '{print $1}'` \
  doctl compute droplet-action shutdown $ID --wait && \
  doctl compute droplet-action snapshot $ID --snapshot-name centos7ocp-nodocker`date +%s` --wait && \
  doctl compute snapshot list
@@ -79,12 +79,23 @@ After the package installation is complete, verify that version 1.12 was install
 
 Edit the /etc/sysconfig/docker file and add --insecure-registry 172.30.0.0/16 to the OPTIONS parameter. For example:
 
- OPTIONS='--selinux-enabled --insecure-registry 172.30.0.0/16'
+ OPTIONS='--selinux-enabled --log-driver=journald --signature-verification=false --insecure-registry 172.30.0.0/16'
+
 
 If using the Quick Installation method, you can easily script a complete installation from a kickstart or cloud-init setup, change the default configuration file:
 
- # sed -i '/OPTIONS=.*/c\OPTIONS="--selinux-enabled --insecure-registry 172.30.0.0/16"' \
+ # sed -i '/OPTIONS=.*/c\OPTIONS="--selinux-enabled --log-driver=journald --signature-verification=false --insecure-registry 172.30.0.0/16"' \
  /etc/sysconfig/docker
+ 
+===== Take a snapshot of the master image
+
+On the 'admin'-machine initiate a snapshot of your work. You have configured the master-image for all master and node hosts. All future openshift master and node hosts will be instanciated of this master-image.
+
+ $ ID=`doctl compute droplet list --no-header --format ID,Name | grep centos7ocp-docker | awk '{print $1}'` \
+ doctl compute droplet-action shutdown $ID --wait && \
+ doctl compute droplet-action snapshot $ID --snapshot-name centos7ocp-docker`date +%s` --wait && \
+ doctl compute snapshot list
+ $ doctl compute droplet delete $ID -f 
  
 === Floating IP Address
  $ doctl compute floating-ip create --region fra1
