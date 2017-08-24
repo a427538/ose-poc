@@ -545,8 +545,6 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#_setting_up_digitalocean_environment">Setting up DigitalOcean Environment</a>
 <ul class="sectlevel2">
 <li><a href="#_host_preparation">Host Preparation</a></li>
-<li><a href="#_login_to_to_the_ocp_master_image_and_prepare_it_for_ocp">Login to to the OCP-Master-Image and prepare it for OCP</a></li>
-<li><a href="#_take_a_snapshot_of_the_master_image">Take a snapshot of the master image</a></li>
 <li><a href="#_floating_ip_address">Floating IP Address</a></li>
 <li><a href="#_domain_and_dns">Domain and DNS</a></li>
 <li><a href="#_droplets">Droplets</a></li>
@@ -890,11 +888,11 @@ Validating token: OK</pre>
 <div class="sect2">
 <h3 id="_host_preparation">Host Preparation</h3>
 <div class="sect3">
-<h4 id="_creating_a_digitalocean_ocp_master_image">Creating a DigitalOcean OCP-Master-Image</h4>
+<h4 id="_creating_a_digitalocean_ocp_master_image_without_docker">Creating a DigitalOcean OCP-Master-Image without docker</h4>
 <div class="literalblock">
 <div class="content">
 <pre># domain=mobilelife.de \
-  host=centos7ocp \
+  host=centos7ocp-nodocker \
   fp_sshkey=f2:6f:8b:32:a7:60:96:a1:43:d8:65:d9:d7:07:aa:3a \
   ImageID=`doctl compute image list --public | grep centos-7-x64 | awk '{print $1}'` \
   newConfig=`doctl compute droplet create ${host}.${domain} --image $ImageID --region fra1 --size 512Mb --ssh-keys $fp_sshkey --wait --no-header --format ID,Name,PublicIPv4` &amp;&amp; \
@@ -907,19 +905,17 @@ Validating token: OK</pre>
 <div class="literalblock">
 <div class="content">
 <pre>ID          Type    Name          Data              Priority    Port    Weight
-24061429    A       centos7ocp    46.101.122.165    0           0       0</pre>
+24061429    A       centos7ocp-nodocker    46.101.122.165    0           0       0</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>You can now initiate a SSH-session to your newly created host, which will be later 'snapshoted' to the OCP-Master-Image, from which all maschines of you HA-Cluster wil be instanciated. Prepare  the host as described in the <a href="https://docs.openshift.com/container-platform/3.5/install_config/install/host_preparation.html">OCP Documentation</a>.</p>
+<p>You can now initiate a SSH-session to your newly created host, which will be later 'snapshoted' to the OCP-Master-Image, from which all maschines of you HA-Cluster wil be instanciated. Prepare  the host as described in the <a href="https://docs.openshift.org/latest/install_config/install/host_preparation.htmll">OCP Documentation</a>.</p>
 </div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_login_to_to_the_ocp_master_image_and_prepare_it_for_ocp">Login to to the OCP-Master-Image and prepare it for OCP</h3>
+<div class="sect4">
+<h5 id="_login_to_to_the_ocp_master_image_and_prepare_it_for_ocp">Login to to the OCP-Master-Image and prepare it for OCP</h5>
 <div class="literalblock">
 <div class="content">
-<pre>$ ssh -l root centos7ocp.mobilelife.de</pre>
+<pre>$ ssh -l root centos7ocp-nodocker.mobilelife.de</pre>
 </div>
 </div>
 <div class="literalblock">
@@ -931,8 +927,15 @@ passwd kstich
 cp -R .ssh /home/kstich
 chown -R kstich:kstich /home/kstich/.ssh
 usermod -aG wheel kstich
-usermod -aG wheel wkulhanek
-yum install wget git net-tools bind-utils iptables-services bridge-utils bash-completion kexec-tools sos psacct
+usermod -aG wheel wkulhanek</pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_preparing_for_advanced_installations">Preparing for Advanced Installations</h5>
+<div class="literalblock">
+<div class="content">
+<pre>yum install wget git net-tools bind-utils iptables-services bridge-utils bash-completion kexec-tools sos psacct
 yum update
 yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 sed -i -e "s/^enabled=1/enabled=0/" /etc/yum.repos.d/epel.repo
@@ -940,25 +943,103 @@ yum -y --enablerepo=epel install ansible pyOpenSSL
 cd ~
 git clone https://github.com/openshift/openshift-ansible
 cd openshift-ansible
-# yum install docker
-# docker version
-# vi /etc/sysconfig/docker
 exit</pre>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_take_a_snapshot_of_the_master_image">Take a snapshot of the master image</h3>
+<div class="sect4">
+<h5 id="_take_a_snapshot_of_the_master_image">Take a snapshot of the master image</h5>
 <div class="paragraph">
 <p>On the 'admin'-machine initiate a snapshot of your work. You have configured the master-image. All future openshift cluster member machines will be instanciated of this master-image.</p>
 </div>
 <div class="literalblock">
 <div class="content">
-<pre>$ ID=`doctl compute droplet list --no-header --format ID,Name | grep centos7ocp | awk '{print $1}'` \
+<pre>$ ID=`doctl compute droplet list --no-header --format ID,Name | grep centos7ocp-nodocker | awk '{print $1}'` &amp;&amp; \
 doctl compute droplet-action shutdown $ID --wait &amp;&amp; \
-doctl compute droplet-action snapshot $ID --snapshot-name centos7ocp-`date +%s` --wait &amp;&amp; \
+doctl compute droplet-action snapshot $ID --snapshot-name centos7ocp-nodocker`date +%s` --wait &amp;&amp; \
 doctl compute snapshot list
-# $ doctl compute droplet delete $ID -f</pre>
+$ doctl compute droplet delete $ID -f</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_creating_a_digitalocean_ocp_master_image_with_docker">Creating a DigitalOcean OCP-Master-Image with docker</h4>
+<div class="literalblock">
+<div class="content">
+<pre># domain=mobilelife.de \
+  host=centos7ocp-docker \
+  fp_sshkey=f2:6f:8b:32:a7:60:96:a1:43:d8:65:d9:d7:07:aa:3a \
+  ImageID=`doctl compute image list | grep centos7ocp-nodocker | awk '{print $1}'` \
+  newConfig=`doctl compute droplet create ${host}.${domain} --image $ImageID --region fra1 --size 512Mb --ssh-keys $fp_sshkey --wait --no-header --format ID,Name,PublicIPv4` &amp;&amp; \
+  doctl compute domain records create $domain --record-type A --record-name $host --record-data `echo $newConfig | awk '{print $3}'`</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The resulting output looks similar to this:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>ID          Type    Name          Data              Priority    Port    Weight
+24061429    A       centos7ocp-docker    46.101.122.165    0           0       0</pre>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_login_to_to_the_droplet_and_prepare_it_as_template_for_all_master_and_node_hosts">Login to to the Droplet and prepare it as template for all master and node hosts</h5>
+<div class="literalblock">
+<div class="content">
+<pre>$ ssh -l root centos7ocp-docker.mobilelife.de</pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_installing_docker">Installing Docker</h5>
+<div class="literalblock">
+<div class="content">
+<pre># yum install docker-1.12.6</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>After the package installation is complete, verify that version 1.12 was installed:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre># rpm -V docker-1.12.6
+# docker version</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Edit the /etc/sysconfig/docker file and add --insecure-registry 172.30.0.0/16 to the OPTIONS parameter. For example:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>OPTIONS='--selinux-enabled --log-driver=journald --signature-verification=false --insecure-registry 172.30.0.0/16'</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If using the Quick Installation method, you can easily script a complete installation from a kickstart or cloud-init setup, change the default configuration file:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre># sed -i '/OPTIONS=.*/c\OPTIONS="--selinux-enabled --log-driver=journald --signature-verification=false --insecure-registry 172.30.0.0/16"' \
+/etc/sysconfig/docker</pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_take_a_snapshot_of_the_master_image_2">Take a snapshot of the master image</h5>
+<div class="paragraph">
+<p>On the 'admin'-machine initiate a snapshot of your work. You have configured the master-image for all master and node hosts. All future openshift master and node hosts will be instanciated of this master-image.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ ID=`doctl compute droplet list --no-header --format ID,Name | grep centos7ocp-docker | awk '{print $1}'` &amp;&amp; \
+doctl compute droplet-action shutdown $ID --wait &amp;&amp; \
+doctl compute droplet-action snapshot $ID --snapshot-name centos7ocp-docker`date +%s` --wait &amp;&amp; \
+doctl compute snapshot list
+$ doctl compute droplet delete $ID -f</pre>
+</div>
+</div>
 </div>
 </div>
 </div>
