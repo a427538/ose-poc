@@ -71,13 +71,16 @@ The resulting output looks similar to this:
 ===== Installing Docker
 
  # yum install docker-1.12.6
+ 
 After the package installation is complete, verify that version 1.12 was installed:
 
  # rpm -V docker-1.12.6
  # docker version
+
 Edit the /etc/sysconfig/docker file and add --insecure-registry 172.30.0.0/16 to the OPTIONS parameter. For example:
 
  OPTIONS='--selinux-enabled --insecure-registry 172.30.0.0/16'
+
 If using the Quick Installation method, you can easily script a complete installation from a kickstart or cloud-init setup, change the default configuration file:
 
  # sed -i '/OPTIONS=.*/c\OPTIONS="--selinux-enabled --insecure-registry 172.30.0.0/16"' \
