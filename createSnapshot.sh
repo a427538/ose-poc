@@ -1,5 +1,5 @@
 #!/bin/bash
-domain=mobilelife.de
+domain=stich.app
 fp_sshkey=f2:6f:8b:32:a7:60:96:a1:43:d8:65:d9:d7:07:aa:3a
 host=$1
         DropletID=`doctl compute droplet list --no-header --format ID,Name | grep $host | awk '{print $1}'`
@@ -10,5 +10,5 @@ host=$1
         fi
         doctl compute droplet delete $DropletID -f
         RecordID=`doctl compute domain records list $domain | grep $host | awk '{print $1}'`
-        doctl compute domain records delete $domain $RecordID
+        doctl compute domain records delete $domain $RecordID -f
 
